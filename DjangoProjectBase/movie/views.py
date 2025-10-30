@@ -16,7 +16,8 @@ from django.conf import settings
 
 # Carga las variables de entorno desde el archivo openAI.env que está en la raíz del proyecto
 load_dotenv(os.path.join(settings.BASE_DIR, 'openAI.env'))
-client = OpenAI(api_key=os.environ.get('openai_apikey'))
+client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+
 
 def cosine_similarity(a, b):
     """Calcula la similitud de coseno entre dos vectores."""
