@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Recomendador de Películas por IA</h1>
+    <p>Describe la película que te gustaría ver y encontraremos la más parecida en nuestra base de datos usando similitud semántica.</p>
+
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        <div class="form-group mb-3">
+            <label for="prompt"><strong>Tu descripción:</strong></label>
+            <textarea class="form-control" id="prompt" name="prompt" rows="4" placeholder="Ej: una película de la segunda guerra mundial sobre un grupo de soldados en una misión especial">{{ prompt }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Encontrar Película</button>
+    </form>
+
+    {% if request.method == 'POST' %}
+    <hr class="my-4">
+    <div class="mt-4">
+        {% if best_movie %}
+            <h2>Película Recomendada</h2>
+            <p>Basado en tu descripción: "<em>{{ prompt }}</em>"</p>
+            <div class="card" style="width: 18rem;">
+                {% if best_movie.image.url %}
+                <img src="{{ best_movie.image.url }}" class="card-img-top" alt="{{ best_movie.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ best_movie.title }} ({{ best_movie.year }})</h5>
+                    <p class="card-text">{{ best_movie.description|truncatechars:150 }}</p>
+                    <p class="card-text"><small class="text-muted">Nivel de Similitud: {{ similarity|floatformat:4 }}</small></p>
+                </div>
+            </div>
+        {% elif error %}
+            <div class="alert alert-danger" role="alert"><strong>Error:</strong> {{ error }}</div>
+        {% else %}
+             <div class="alert alert-warning" role="alert">No se encontró una película para la descripción proporcionada.</div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}
